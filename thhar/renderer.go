@@ -6,7 +6,9 @@ import (
 	"image/color"
 	"log"
 	"math"
+	"net/http"
 	"os"
+	"runtime"
 	"strconv"
 	"strings"
 
@@ -53,15 +55,30 @@ func Render(screen *ebiten.Image, objects []Object_3d, camera *Camera, colored c
 
 }
 
-func GetObjectFromFile(filename string, scale float64) Object_3d {
-	file, err := os.Open(filename)
-	var obj Object_3d
-	if err != nil {
-		panic(err)
+func wasm_get_file_content(filename string) bufio.Scanner {
+	if filename == "" {
+		panic("filename is empty")
 	}
-	defer file.Close()
-	log.Printf("GEtting an object")
+	if runtime.GOOS == "js" {
+		file, err := http.Get("/3dModels/sequence.obj")
+		if err != nil {
+			log.Panicf("File was not accesed / found! %v", err)
+		}
+		scanner := bufio.NewScanner(file.Body)
+		return *scanner
+	}
+	file, err := os.Open(fmt.Sprintf(".%v", filename))
+	if err != nil {
+		log.Panicf("File was not accesed! %v", err)
+	}
 	scanner := bufio.NewScanner(file)
+	return *scanner
+}
+
+func GetObjectFromFile(filename string, scale float64) Object_3d {
+	var obj Object_3d
+	log.Printf("GEtting an object")
+	scanner := wasm_get_file_content(filename)
 	for scanner.Scan() {
 		line := scanner.Text()
 
@@ -186,7 +203,7 @@ func radar(s *ebiten.Image, objects []Object_3d, camera *Camera) {
 
 func Debug_map(s *ebiten.Image, objects []Object_3d, camera *Camera) {
 	//new radar
-	radar(s, objects, camera)
+	// radar(s, objects, camera)
 
 	if !ebiten.IsKeyPressed(ebiten.KeyF2) {
 		return
@@ -222,7 +239,7 @@ func Debug_map(s *ebiten.Image, objects []Object_3d, camera *Camera) {
 
 		vector.DrawFilledCircle(s, float32(scaledX), float32(scaledY), 2, color.RGBA{0, 0, 255, 255}, true)
 		if ebiten.IsKeyPressed(ebiten.KeyF2) {
-			// ebitenutil.DebugPrintAt(s, fmt.Sprintf("Scaled object: X: %v, Z: %v, id: %v", scaledX, scaledY, i), 0, 230+i*50)
+			ebitenutil.DebugPrintAt(s, fmt.Sprintf("Rotations: Yaw: %v, Pitch: %v, Roll: %v", camera.Angle_yaw, camera.Angle_pitch, camera.Angle_roll), 0, 360)
 		}
 	}
 

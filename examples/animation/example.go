@@ -20,6 +20,11 @@ var Camera renderer.Camera
 
 // Ebiten Boilerplate
 func (g *Game) Update() error {
+	// Animation is as simple as changing the variables here.
+	Objects[0].Rotation.X += 0.01
+	Objects[0].Rotation.Y += 0.01
+	Objects[0].Rotation.Z += 0.01
+
 	return nil
 }
 
