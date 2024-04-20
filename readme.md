@@ -13,7 +13,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	renderer.Render(screen, Objects, &Camera, color.White)
 }
 ``` 
-*extract from [./examples/basic/example.go]* 
+*extract from [./examples/basic/example.go](./examples/basic/example.go)* 
 
 Handling movement can be done using the `.HandleMovement` function (this uses default ebiten key press detection, [Keybinds](#Keybinds)), passing by the `Camera` every frame. If more customization is needed the `Camera`'s angle and position variables are exposed and can be used to adjust or remove completely the ability to move the camera.
 
