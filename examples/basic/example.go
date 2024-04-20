@@ -1,0 +1,47 @@
+package main
+
+import (
+	"image/color"
+	"log"
+
+	"github.com/hajimehoshi/ebiten/v2"
+	renderer "github.com/tomasz-brak/thhar-3d/thhar"
+)
+
+type Game struct{}
+
+// Objects is a slice of 3d objects that will be rendered.
+var Objects []renderer.Object_3d
+
+// Camera is the camera that will be used to render the 3d objects.
+var Camera renderer.Camera
+
+// Ebiten Boilerplate
+func (g *Game) Update() error {
+	return nil
+}
+
+// Game loop
+func (g *Game) Draw(screen *ebiten.Image) {
+	// Camera movement code is included in the library. If you want to use your own code for that you can by modifying the "origin" of the camera.
+	renderer.HandleMovement(&Camera)
+	// Rendering 3d objects
+	renderer.Render(screen, Objects, &Camera, color.White)
+}
+
+func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
+	return 1600, 900
+}
+
+func main() {
+	ebiten.SetWindowSize(1600, 900)
+	// Setting up a new camera in the 3d space, you can setup multiple with different angles and positions. The camera passed to the Render function will be used.
+	Camera = *renderer.New_camera(renderer.Point_3d{X: 0, Y: 0, Z: 10})
+
+	// Importing a model from a file, appending it to global objects. || File from cwd.
+	Objects = append(Objects, renderer.GetObjectFromFile("./examples/basic/example.obj", 1))
+
+	if err := ebiten.RunGame(&Game{}); err != nil {
+		log.Fatal(err)
+	}
+}
