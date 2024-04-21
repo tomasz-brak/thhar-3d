@@ -60,7 +60,7 @@ func wasm_get_file_content(filename string) bufio.Scanner {
 		panic("filename is empty")
 	}
 	if runtime.GOOS == "js" {
-		file, err := http.Get("/3dModels/sequence.obj")
+		file, err := http.Get(filename)
 		if err != nil {
 			log.Panicf("File was not accesed / found! %v", err)
 		}

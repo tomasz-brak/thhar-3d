@@ -2,6 +2,10 @@
 
 Thhar is a 3d rendering engine written in go. Based on [ebiten](https://ebitengine.org/), it allows for rendering complex shapes. It supports [Wavefront's `.obj` format](https://en.wikipedia.org/wiki/Wavefront_.obj_file). ![cube](https://i.imgur.com/nNJsauP.png)
 
+## Live demos
+
+Demos can be found on my blog [https://blog-per.vercel.app/demos](https://blog-per.vercel.app/demos), check the rendering with thhar section
+
 ## Usage
 
 Only requirement is to put a `.Render` function in any [ebiten](https://ebitengine.org/) application's main loop. Calling it with our camera instance and passing in details about the color of rendered lines.
